@@ -338,6 +338,12 @@ class GranularAPIMixin:
             'SeasonId': season_id
         })
 
+    def get_artists(self, artist_name):
+        return self._get("Artists/%s" % artist_name, {
+            'UserId': "{UserId}",
+            'Fields': info()
+        })
+
     def get_genres(self, parent_id=None):
         return self._get("Genres", {
             'ParentId': parent_id,
@@ -360,6 +366,15 @@ class GranularAPIMixin:
             'Fields': info(),
             'Recursive': True,
             'IncludeItemTypes': media
+        })
+
+    def get_items_by_artist(self, artist_id, media=None, sort_by=None, fields=info()):
+        return self.user_items(params={
+            'AlbumArtistIds': artist_id,
+            'Recursive': True,
+            'IncludeItemTypes': media,
+            'SortBy': sort_by,
+            'Fields': info() if fields == info() else ','.join(str(x) for x in fields),
         })
 
     def search_media_items(self, term=None, year=None, media=None, limit=20, parent_id=None):
